@@ -6,29 +6,23 @@ Frontend desarrollado en **React** y **TypeScript** con **Vite**, estilizado con
 
 ---
 
-## 🛠️ Organización del Código
+## 🛠️ Arquitectura por Features Adoptada
 
-El proyecto sigue una estructura modular orientada a funcionalidades:
+Para este trabajo práctico se abandonó la clásica estructura plana donde todos los componentes, hooks o páginas iban juntos en carpetas genéricas. En su lugar, el proyecto se organizó por **módulos de dominio o features**, donde cada parte del sistema es autónoma:
 
-```text
-src/
-├── features/
-│   ├── auth/           # Login, registro, administración de usuarios y estado de sesión
-│   ├── categories/     # Listado, creación, edición y baja de categorías
-│   ├── products/       # Catálogo y administración de productos
-│   └── ingredients/    # Gestión de ingredientes
-├── shared/             # Recursos compartidos (API, Navbar, Toast, modales)
-├── routes/             # Configuración de rutas y guardián de acceso (ProtectedRoute)
-├── store/              # Stores globales de interfaz (tema visual y notificaciones)
-├── App.tsx             # Componente raíz de la aplicación
-└── main.tsx            # Punto de entrada
-```
+- **Estructura interna de cada feature:** dentro de cada carpeta en `src/features/` (`auth`, `categories`, `products` e `ingredients`) se agrupan exclusivamente los recursos que le pertenecen:
+  - `components/`: elementos visuales propios de esa funcionalidad (tarjetas, listas, formularios modales).
+  - `hooks/`: hooks personalizados que manejan la lógica y las llamadas asíncronas con TanStack Query.
+  - `pages/`: las vistas o pantallas principales que renderiza el router.
+  - `services/`: funciones que hacen las peticiones HTTP a la API.
+  - `types/`: interfaces y tipos de TypeScript del dominio.
+  - `index.ts`: archivo barrel que exporta únicamente la API pública de la feature. Si otro módulo necesita algo de acá, lo importa directamente desde este archivo y nunca desde sus carpetas internas.
 
-### Principales aspectos de diseño:
-- **Modularidad e imports limpios:** cada feature contiene sus propios componentes, hooks de datos, servicios y tipos, exponiendo únicamente lo necesario a través de su archivo `index.ts`. Se utiliza el alias `@/` para simplificar las rutas de importación.
-- **Rutas protegidas:** se valida el estado de la sesión antes de mostrar cualquier pantalla privada. Si no hay sesión iniciada se redirige al login, y si el usuario no tiene permisos suficientes para una sección (como el panel de usuarios), se muestra la vista de acceso denegado.
-- **Hooks de datos:** las consultas y mutaciones asíncronas se encapsulan en hooks personalizados utilizando TanStack Query, manteniendo los componentes visuales enfocados en la interfaz.
-- **Preferencias de interfaz:** incluye alternancia entre modo claro y modo oscuro (guardando la preferencia en el navegador) y avisos flotantes temporales ante las distintas acciones del usuario.
+- **Código compartido (`src/shared/`):** acá se colocó todo lo que no pertenece a una feature en particular y se usa en varios lados, como la configuración de Axios, los interceptores de sesión, la barra de navegación (`Navbar`), el `Toast` y los modales genéricos.
+
+- **Rutas (`src/routes/`):** concentra la navegación en `AppRouter.tsx` y el guardián de acceso `ProtectedRoute.tsx`, separando las pantallas públicas de las privadas mediante `<Outlet />`.
+
+- **Estado global (`src/store/`):** stores ligeros de Zustand para el tema claro/oscuro (con persistencia en `localStorage`) y las notificaciones temporales.
 
 ---
 

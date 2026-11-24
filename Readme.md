@@ -25,11 +25,12 @@ tp-10/
 ```
 
 ### 🔹 Frontend (`tp-categorias`)
-El código fuente dentro de `src/` está organizado por módulos de dominio:
-- **`features/`**: cada módulo (`auth`, `categories`, `products`, `ingredients`) agrupa sus propios componentes, páginas, tipos, servicios y hooks. Cada uno expone su funcionalidad a través de un archivo de barril (`index.ts`).
-- **`shared/`**: contiene elementos transversales y reutilizables por varios módulos (instancia de Axios, interceptores de respuesta, barra de navegación, notificaciones flotantes y modales).
-- **`routes/`**: define la navegación de la aplicación y el guardián de acceso (`ProtectedRoute`), impidiendo que usuarios sin sesión o sin el rol adecuado accedan a pantallas no autorizadas.
-- **`store/`**: stores de Zustand para preferencias globales de interfaz (tema claro/oscuro persistente y notificaciones temporales).
+Se adoptó una **arquitectura por features** para separar responsabilidades por dominio en lugar de agrupar archivos por tipo técnico:
+- **`features/`**: cada módulo (`auth`, `categories`, `products`, `ingredients`) reúne sus propios componentes, páginas, tipos, servicios y hooks. Cada una expone su funcionalidad pública mediante un barrel (`index.ts`), evitando que una feature importe subcarpetas internas de otra.
+- **`shared/`**: aloja elementos transversales reutilizados por varias features (instancia e interceptores de Axios, Navbar, Toast y componentes de estado).
+- **`routes/`**: define las rutas en `AppRouter.tsx` y el guardián `ProtectedRoute.tsx` con `<Outlet />`, validando sesión y roles antes de renderizar cada vista.
+- **`store/`**: stores de Zustand para estado transversal de interfaz (tema claro/oscuro persistido y notificaciones).
+- **Alias `@/`**: configurado para imports directos y limpios sin rutas relativas largas.
 
 ### 🔹 Backend (`fastapi-productos`)
 Servidor API REST que provee:
