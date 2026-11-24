@@ -14,24 +14,24 @@ export function AppRouter() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-      {/* Redirecciones de conveniencia */}
+      {/* Redirecciones */}
       <Route path="/" element={<Navigate to="/categories" replace />} />
       <Route path="/categorias" element={<Navigate to="/categories" replace />} />
       <Route path="/productos" element={<Navigate to="/products" replace />} />
 
-      {/* Rutas protegidas para cualquier usuario autenticado */}
+      {/* Rutas protegidas para usuarios autenticados de cualquier tipo */}
       <Route element={<ProtectedRoute />}>
         <Route path="/categories" element={<CategoriasPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/ingredientes" element={<IngredientesPage />} />
       </Route>
 
-      {/* Ruta protegida solo para administradores */}
+      {/* Ruta protegida sólo para administradores */}
       <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin/users" element={<AdminUsersPage />} />
       </Route>
 
-      {/* Cualquier ruta no definida */}
+      {/* Cualquier otra ruta no definida */}
       <Route path="*" element={<Navigate to="/categories" replace />} />
     </Routes>
   );

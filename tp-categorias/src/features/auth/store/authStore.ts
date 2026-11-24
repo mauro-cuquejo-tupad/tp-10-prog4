@@ -18,6 +18,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   status: "checking",
 
   checkAuth: async () => {
+    // Se simula pequeña latencia de red (1.5s) para visualizar mejor el estado "checking" y el Spinner
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     try {
       const { data } = await api.get<User>("/api/v1/auth/me");
       const normalizedUser: User = {
