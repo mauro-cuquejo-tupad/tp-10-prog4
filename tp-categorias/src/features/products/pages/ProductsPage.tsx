@@ -60,7 +60,7 @@ export const ProductsPage: React.FC = () => {
             Productos
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            {isAdmin ? "Administración de productos del catálogo gastronómico" : "Catálogo de productos"}
+            {isAdmin ? "Administración de productos" : "Catálogo de productos"}
           </p>
         </div>
         {isAdmin && (
