@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "@tanstack/react-form";
 import type { Ingrediente, IngredienteFormData } from "../types/ingrediente.types";
-import { useEscapeKey } from "@/shared/components/SharedModalsAndStates";
+import { useEscapeKey } from "@/shared/hooks/useEscapeKey";
 
 interface IngredienteModalProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "@tanstack/react-form";
 import type { Categoria, CategoriaFormData } from "../types/categoria.types";
-import { useEscapeKey } from "@/shared/components/SharedModalsAndStates";
+import { useEscapeKey } from "@/shared/hooks/useEscapeKey";
 
 interface CategoriaModalProps {
   isOpen: boolean;

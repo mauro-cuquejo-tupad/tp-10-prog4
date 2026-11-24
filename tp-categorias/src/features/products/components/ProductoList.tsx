@@ -31,8 +31,10 @@ export const ProductoList: React.FC<ProductoListProps> = ({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const columns = useMemo<ColumnDef<Producto>[]>(() => {
-    const cols: ColumnDef<Producto>[] = [
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const columns = useMemo<ColumnDef<Producto, any>[]>(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cols: ColumnDef<Producto, any>[] = [
       columnHelper.accessor("id", {
         header: () => "ID",
         cell: (info) => (

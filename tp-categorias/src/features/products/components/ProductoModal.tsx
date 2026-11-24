@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "@tanstack/react-form";
 import type { Producto, ProductoFormData } from "../types/producto.types";
-import { useEscapeKey } from "@/shared/components/SharedModalsAndStates";
+import { useEscapeKey } from "@/shared/hooks/useEscapeKey";
 
 interface ProductoModalProps {
   isOpen: boolean;

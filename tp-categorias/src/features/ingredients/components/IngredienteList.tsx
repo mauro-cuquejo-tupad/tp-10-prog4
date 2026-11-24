@@ -31,8 +31,10 @@ export const IngredienteList: React.FC<IngredienteListProps> = ({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const columns = useMemo<ColumnDef<Ingrediente>[]>(() => {
-    const cols: ColumnDef<Ingrediente>[] = [
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const columns = useMemo<ColumnDef<Ingrediente, any>[]>(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cols: ColumnDef<Ingrediente, any>[] = [
       columnHelper.accessor("id", {
         header: () => "ID",
         cell: (info) => (

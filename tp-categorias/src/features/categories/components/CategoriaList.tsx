@@ -31,8 +31,10 @@ export const CategoriaList: React.FC<CategoriaListProps> = ({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const columns = useMemo<ColumnDef<Categoria>[]>(() => {
-    const cols: ColumnDef<Categoria>[] = [
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const columns = useMemo<ColumnDef<Categoria, any>[]>(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cols: ColumnDef<Categoria, any>[] = [
       columnHelper.accessor("id", {
         header: () => "ID",
         cell: (info) => (
