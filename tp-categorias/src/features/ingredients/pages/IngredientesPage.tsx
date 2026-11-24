@@ -60,7 +60,7 @@ export const IngredientesPage: React.FC = () => {
             Ingredientes
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Administración de ingredientes
+            {isAdmin ? "Administración de ingredientes" : "Catálogo de ingredientes"}
           </p>
         </div>
         {isAdmin && (

@@ -60,7 +60,7 @@ export const CategoriasPage: React.FC = () => {
             Categorías
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Administración de categorías del catálogo gastronómico
+            {isAdmin ? "Administración de categorías" : "Catálogo de categorías"}
           </p>
         </div>
         {isAdmin && (
