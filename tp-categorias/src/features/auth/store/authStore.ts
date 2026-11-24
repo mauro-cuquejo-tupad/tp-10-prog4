@@ -19,7 +19,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
   checkAuth: async () => {
     try {
-      const { data } = await api.get<User>("/auth/me");
+      const { data } = await api.get<User>("/api/v1/auth/me");
       const normalizedUser: User = {
         ...data,
         roles: data.roles ?? (data.role ? [data.role] : []),
@@ -32,13 +32,13 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   },
 
   login: async (username: string, password: string) => {
-    await api.post("/auth/token", new URLSearchParams({ username, password }));
+    await api.post("/api/v1/auth/token", new URLSearchParams({ username, password }));
     await get().checkAuth();
   },
 
   logout: async () => {
     try {
-      await api.post("/auth/logout");
+      await api.post("/api/v1/auth/logout");
     } finally {
       set({ user: null, status: "unauthenticated" });
     }
