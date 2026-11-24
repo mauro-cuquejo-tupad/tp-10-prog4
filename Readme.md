@@ -1,113 +1,81 @@
-# Trabajo Práctico 10 - Arquitectura por Features y Rutas Protegidas
+# Gestor Gastronómico - Trabajo Práctico 10
 **Materia:** Programación 4 - UTN  
 **Alumno:** Mauro Cuquejo  
 
 ---
 
-## Descripción General
+## 📌 Descripción del Proyecto
 
-Este proyecto corresponde a la resolución del **Trabajo Práctico de la Unidad 10**, enfocado en la refactorización arquitectónica del frontend a una **arquitectura modular por features** y la **protección integral de rutas en el cliente basada en roles (RBAC)** con estado global en Zustand y comunicación segura vía cookies `HttpOnly` con el backend en FastAPI.
+Aplicación web integral para la administración de un catálogo gastronómico (categorías, productos e ingredientes), gestión de usuarios y pedidos.
+
+En esta etapa del proyecto, el frontend fue refactorizado adoptando una **arquitectura modular por features**, organizando el código en torno a los dominios del sistema en lugar de agrupar los archivos por tipo técnico. Además, se implementó el control de acceso en el cliente con **rutas protegidas por rol**, consumo seguro de la sesión mediante cookies `HttpOnly` y manejo de estado global de interfaz (tema visual y notificaciones).
 
 ---
 
-## Estructura del Repositorio
+## 📁 Estructura del Repositorio
+
+El repositorio se compone de dos aplicaciones principales:
 
 ```text
 tp-10/
-├── fastapi-productos/             # Backend FastAPI + SQLModel + PostgreSQL (Unidad 9/10)
-│   ├── app/
-│   │   ├── core/                  # config, security, deps, uow, database
-│   │   ├── modules/
-│   │   │   └── usuarios/          # RBAC, autenticación por cookies HttpOnly
-│   │   ├── categoria/             # Endpoints protegidos por rol admin
-│   │   ├── producto/              # Endpoints protegidos por rol admin
-│   │   ├── ingrediente/           # Endpoints protegidos por rol admin
-│   │   └── pedidos/               # Pedidos y direcciones asociadas a sesión
-│   ├── tests/
-│   │   ├── conftest.py
-│   │   └── test_auth.py           # Pruebas automatizadas de autenticación y roles
-│   ├── requirements.txt
-│   └── README.md
-│
-├── tp-categorias/                 # Frontend React 19 + TypeScript + Vite + Zustand + TanStack Query
-│   ├── src/
-│   │   ├── features/              # Módulos por dominio con barrel exports
-│   │   │   ├── auth/              # components, hooks, services, store, types, pages
-│   │   │   ├── categories/        # components, hooks, services, types, pages
-│   │   │   ├── products/          # components, hooks, services, types, pages
-│   │   │   └── ingredients/       # components, hooks, services, types, pages
-│   │   ├── shared/                # Recursos transversales (api, setupInterceptors, Navbar, Toast)
-│   │   ├── store/                 # Stores globales de interfaz (themeStore, notificationStore)
-│   │   ├── routes/                # AppRouter.tsx y ProtectedRoute.tsx con Outlet
-│   │   ├── App.tsx                # Composición limpia (checkAuth + router + Toast)
-│   │   └── main.tsx
-│   ├── package.json
-│   ├── tsconfig.app.json          # Configuración de alias @/ -> src/
-│   ├── vite.config.ts             # Configuración de alias @/
-│   └── README.md
-│
-├── Cuquejo_Mauro_TP10.zip          # Entrega comprimida del frontend limpio (sin node_modules)
-├── docker-compose.yml             # Contenedor de PostgreSQL
-├── ingredientes.http              # Pruebas HTTP REST Client
-├── pedidos.http                   # Pruebas HTTP REST Client
-└── Readme.md                      # Documentación del proyecto
+├── fastapi-productos/     # Backend en Python (FastAPI + SQLModel + PostgreSQL)
+├── tp-categorias/         # Frontend en React + TypeScript + Vite + Tailwind CSS
+├── docker-compose.yml     # Servicio de base de datos PostgreSQL
+└── Readme.md              # Documentación general
 ```
 
----
+### 🔹 Frontend (`tp-categorias`)
+El código fuente dentro de `src/` está organizado por módulos de dominio:
+- **`features/`**: cada módulo (`auth`, `categories`, `products`, `ingredients`) agrupa sus propios componentes, páginas, tipos, servicios y hooks. Cada uno expone su funcionalidad a través de un archivo de barril (`index.ts`).
+- **`shared/`**: contiene elementos transversales y reutilizables por varios módulos (instancia de Axios, interceptores de respuesta, barra de navegación, notificaciones flotantes y modales).
+- **`routes/`**: define la navegación de la aplicación y el guardián de acceso (`ProtectedRoute`), impidiendo que usuarios sin sesión o sin el rol adecuado accedan a pantallas no autorizadas.
+- **`store/`**: stores de Zustand para preferencias globales de interfaz (tema claro/oscuro persistente y notificaciones temporales).
 
-## Aspectos Técnicos Destacados
-
-1. **Arquitectura por Features (RA-01 a RA-03):**
-   - Cada dominio funcional (`auth`, `categories`, `products`, `ingredients`) encapsula sus componentes, hooks, servicios, tipos y páginas.
-   - Las features exponen únicamente su interfaz pública mediante barrels (`index.ts`).
-   - Ningún módulo importa subcarpetas internas de otro dominio.
-   - Todo elemento compartido transversal reside en `shared/` o `store/`.
-
-2. **Alias `@/` (HU-05, RA-08):**
-   - Resuelto tanto en `vite.config.ts` como en `tsconfig.app.json` (`paths: { "@/*": ["./src/*"] }`), garantizando importaciones limpias e independientes de la profundidad de carpetas.
-
-3. **Protección de Rutas con `<Outlet />` (HU-04, RA-05, RA-06):**
-   - `ProtectedRoute.tsx` actúa como ruta padre contenedora leyendo el estado de sesión y roles de `useAuthStore`.
-   - Estado `checking` para espera asincrónica sin redirecciones prematuras.
-   - Redirección con `replace` a `/login` para usuarios sin sesión y a `/unauthorized` para usuarios autenticados sin rol correspondiente.
-   - Ruta `/admin/users` restringida exclusivamente a `allowedRoles={['admin']}`.
-
-4. **Custom Hooks con TanStack Query (HU-03, RA-07):**
-   - Hooks especializados `useCategories`, `useProducts`, `useIngredients` y `useAuth` que aíslan las llamadas a Axios y los hooks `useQuery`/`useMutation` de TanStack Query, liberando los componentes de presentación de lógica de red.
-
-5. **Manejo Centralizado de 401 y 403 (RA-05, Criterio B):**
-   - `setupInterceptors.ts` captura respuestas 401 limpiando la sesión para redirección automática.
-   - Captura respuestas 403 emitiendo avisos de acceso denegado sin interrumpir la sesión del usuario.
-
-6. **Estado Global de Interfaz (HU-06, RA-09):**
-   - Modo claro / oscuro persistido en `localStorage` con `useThemeStore` y middleware `persist`.
-   - Sistema de alertas visuales no bloqueantes con `useNotificationStore` y `<Toast />` con temporizador de 3 segundos.
-   - La sesión **no se guarda en localStorage**; se valida contra `/api/v1/auth/me` mediante cookie `HttpOnly`.
+### 🔹 Backend (`fastapi-productos`)
+Servidor API REST que provee:
+- Autenticación y control de sesión con tokens JWT en cookies seguras `HttpOnly`.
+- Control de acceso basado en roles (usuarios estándar y administradores).
+- Endpoints para la gestión completa del catálogo de productos, categorías, ingredientes y pedidos.
 
 ---
 
-## Puesta en Marcha
+## 🚀 Puesta en Marcha
 
 ### 1. Base de Datos
+Para iniciar la base de datos PostgreSQL con Docker:
 ```bash
 docker compose up -d
 ```
 
 ### 2. Backend (FastAPI)
-```bash
-cd fastapi-productos
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
+1. Ingresar a la carpeta del backend:
+   ```bash
+   cd fastapi-productos
+   ```
+2. Instalar los paquetes necesarios:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Ejecutar el servidor:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+> La documentación interactiva queda disponible en: `http://localhost:8000/docs`
 
 ### 3. Frontend (React)
-```bash
-cd tp-categorias
-pnpm install
-pnpm dev
-```
-
-Build de producción:
-```bash
-pnpm build
-```
+1. Ingresar a la carpeta del frontend:
+   ```bash
+   cd tp-categorias
+   ```
+2. Instalar dependencias:
+   ```bash
+   pnpm install
+   ```
+3. Iniciar el entorno de desarrollo:
+   ```bash
+   pnpm dev
+   ```
+4. Para compilar la versión de producción:
+   ```bash
+   pnpm build
+   ```
