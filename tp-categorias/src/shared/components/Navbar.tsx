@@ -1,14 +1,12 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth";
-import { useThemeStore } from "@/store/themeStore";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, hasRole } = useAuthStore();
-  const darkMode = useThemeStore((s) => s.darkMode);
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
   const handleLogout = async () => {
     await logout();
@@ -39,42 +37,38 @@ export const Navbar: React.FC = () => {
               <div className="hidden sm:flex space-x-2">
                 <Link
                   to="/categories"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive("/categories")
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/categories")
                       ? "bg-slate-800 text-blue-400"
                       : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                  }`}
+                    }`}
                 >
                   Categorías
                 </Link>
                 <Link
                   to="/products"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive("/products")
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/products")
                       ? "bg-slate-800 text-blue-400"
                       : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                  }`}
+                    }`}
                 >
                   Productos
                 </Link>
                 <Link
                   to="/ingredientes"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive("/ingredientes")
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/ingredientes")
                       ? "bg-slate-800 text-blue-400"
                       : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                  }`}
+                    }`}
                 >
                   Ingredientes
                 </Link>
                 {isAdmin && (
                   <Link
                     to="/admin/users"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive("/admin/users")
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/admin/users")
                         ? "bg-slate-800 text-purple-400"
                         : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                    }`}
+                      }`}
                   >
                     Usuarios (Admin)
                   </Link>
@@ -84,14 +78,15 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors text-xs font-medium cursor-pointer"
-              title="Cambiar tema"
-            >
-              {darkMode ? "☀️ Claro" : "🌙 Oscuro"}
-            </button>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-slate-400 select-none hidden sm:inline">
+                ☀️
+              </span>
+              <ThemeToggle />
+              <span className="text-xs text-slate-400 select-none hidden sm:inline">
+                🌙
+              </span>
+            </div>
 
             {user ? (
               <div className="flex items-center space-x-4">
